@@ -1,4 +1,7 @@
 require 'rubygems/command'
+require 'fileutils'
+require 'rbconfig'
+require 'tmpdir'
 
 ##
 # Installs RubyGems itself.  This command is ordinarily only available from a
@@ -7,8 +10,6 @@ require 'rubygems/command'
 class Gem::Commands::SetupCommand < Gem::Command
 
   def initialize
-    require 'tmpdir'
-
     super 'setup', 'Install RubyGems',
           :format_executable => true, :rdoc => true, :ri => true,
           :site_or_vendor => :sitelibdir,
@@ -97,7 +98,6 @@ By default, this RubyGems will install gem as:
 
     check_ruby_version
 
-    require 'fileutils'
     if Gem.configuration.really_verbose then
       extend FileUtils::Verbose
     else

@@ -4,6 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'timeout'
 require 'rubygems/command'
 require 'rubygems/user_interaction'
 
@@ -41,7 +42,6 @@ class Gem::CommandManager
   # Register all the subcommands supported by the gem command.
 
   def initialize
-    require 'timeout'
     @commands = {}
     register_command :build
     register_command :cert

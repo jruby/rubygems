@@ -1,4 +1,5 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
+
 require 'rubygems/commands/cert_command'
 
 unless defined? OpenSSL then

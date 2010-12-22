@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'rubygems/command'
 require 'rubygems/format'
 require 'rubygems/installer'

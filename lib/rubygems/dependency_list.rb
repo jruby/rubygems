@@ -187,7 +187,6 @@ class Gem::DependencyList
           begin
             yield spec
           rescue TSort::Cyclic
-            # do nothing
           end
           break
         end

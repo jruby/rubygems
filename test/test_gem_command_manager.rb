@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems/command_manager'
 
 class TestGemCommandManager < RubyGemTestCase
@@ -10,7 +10,7 @@ class TestGemCommandManager < RubyGemTestCase
   end
 
   def test_run_interrupt
-    Gem.load_env_plugins
+    Gem.load_plugins
 
     use_ui @ui do
       assert_raises MockGemUi::TermError do
@@ -54,6 +54,7 @@ class TestGemCommandManager < RubyGemTestCase
 
       #check defaults
       @command_manager.process_args("install")
+      assert_equal false, check_options[:test]
       assert_equal true, check_options[:generate_rdoc]
       assert_equal false, check_options[:force]
       assert_equal :both, check_options[:domain]
@@ -65,7 +66,7 @@ class TestGemCommandManager < RubyGemTestCase
       #check settings
       check_options = nil
       @command_manager.process_args(
-        "install --force --local --rdoc --install-dir . --version 3.0 --no-wrapper --bindir . ")
+        "install --force --test --local --rdoc --install-dir . --version 3.0 --no-wrapper --bindir . ")
       assert_equal true, check_options[:generate_rdoc]
       assert_equal true, check_options[:force]
       assert_equal :local, check_options[:domain]
@@ -194,7 +195,7 @@ class TestGemCommandManager < RubyGemTestCase
 
     #check settings
     check_options = nil
-    @command_manager.process_args("update --force --rdoc --install-dir .")
+    @command_manager.process_args("update --force --test --rdoc --install-dir .")
     assert_equal true, check_options[:generate_rdoc]
     assert_equal true, check_options[:force]
     assert_equal Dir.pwd, check_options[:install_dir]

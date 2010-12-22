@@ -1,5 +1,5 @@
-require File.expand_path('../gemutilities', __FILE__)
-require "rubygems/version"
+require_relative 'gemutilities'
+require 'rubygems/version'
 
 class TestGemVersion < RubyGemTestCase
 
@@ -9,10 +9,6 @@ class TestGemVersion < RubyGemTestCase
 
   def test_bump_alpha
     assert_bumped_version_equal "5.3", "5.2.4.a"
-  end
-
-  def test_bump_alphanumeric
-    assert_bumped_version_equal "5.3", "5.2.4.a10"
   end
 
   def test_bump_trailing_zeros
@@ -92,16 +88,13 @@ class TestGemVersion < RubyGemTestCase
   end
 
   def test_spaceship
-    assert_equal( 0, v("1.0")       <=> v("1.0.0"))
-    assert_equal( 1, v("1.0")       <=> v("1.0.a"))
-    assert_equal( 1, v("1.8.2")     <=> v("0.0.0"))
-    assert_equal( 1, v("1.8.2")     <=> v("1.8.2.a"))
-    assert_equal( 1, v("1.8.2.b")   <=> v("1.8.2.a"))
-    assert_equal(-1, v("1.8.2.a")   <=> v("1.8.2"))
-    assert_equal( 1, v("1.8.2.a10") <=> v("1.8.2.a9"))
-    assert_equal( 0, v("")          <=> v("0"))
-
-    assert_nil v("1.0") <=> "whatever"
+    assert_equal( 0, v("1.0")     <=> v("1.0.0"))
+    assert_equal( 1, v("1.0")     <=> v("1.0.a"))
+    assert_equal( 1, v("1.8.2")   <=> v("0.0.0"))
+    assert_equal( 1, v("1.8.2")   <=> v("1.8.2.a"))
+    assert_equal( 1, v("1.8.2.b") <=> v("1.8.2.a"))
+    assert_equal(-1, v("1.8.2.a") <=> v("1.8.2"))
+    assert_equal( 0, v("")        <=> v("0"))
   end
 
   def test_spermy_recommendation

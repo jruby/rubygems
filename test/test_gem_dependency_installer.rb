@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems/dependency_installer'
 
 class TestGemDependencyInstaller < RubyGemTestCase
@@ -44,14 +44,14 @@ class TestGemDependencyInstaller < RubyGemTestCase
       s.platform = Gem::Platform.new %w[cpu other_platform 1]
     end
 
-    @w1, @w1_gem = util_gem 'w', '1', 'x' => nil
+    @w1, @w1_gem = util_gem 'w', '1' do |s| s.add_dependency 'x' end
 
     @y1, @y1_gem = util_gem 'y', '1'
     @y1_1_p, @y1_1_p_gem = util_gem 'y', '1.1' do |s|
       s.platform = Gem::Platform.new %w[cpu my_platform 1]
     end
 
-    @z1, @z1_gem = util_gem 'z', '1', 'y' => nil
+    @z1, @z1_gem = util_gem 'z', '1'   do |s| s.add_dependency 'y' end
 
     @fetcher = Gem::FakeFetcher.new
     Gem::RemoteFetcher.fetcher = @fetcher
@@ -191,7 +191,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
 
   def test_install_dependency_old
     e1, e1_gem = util_gem 'e', '1'
-    f1, f1_gem = util_gem 'f', '1', 'e' => nil
+    f1, f1_gem = util_gem 'f', '1' do |s| s.add_dependency 'e' end
     f2, f2_gem = util_gem 'f', '2'
 
     FileUtils.mv e1_gem, @tempdir
@@ -607,25 +607,27 @@ class TestGemDependencyInstaller < RubyGemTestCase
     assert_equal [@a1_pre], prereleases
   end
 
-  def assert_resolve expected, *specs
-    util_clear_gems
-
-    si = util_setup_spec_fetcher(*specs)
-
-    inst = Gem::DependencyInstaller.new
-    inst.find_spec_by_name_and_version 'a'
-    inst.gather_dependencies
-
-    actual = inst.gems_to_install.map { |s| s.full_name }
-    assert_equal expected, actual
-  end
-
   def test_gather_dependencies
     inst = Gem::DependencyInstaller.new
     inst.find_spec_by_name_and_version 'b'
     inst.gather_dependencies
 
     assert_equal %w[a-1 b-1], inst.gems_to_install.map { |s| s.full_name }
+  end
+
+  def test_gather_dependencies_dropped
+    b2, = util_gem 'b', '2'
+    c1, = util_gem 'c', '1' do |s| s.add_dependency 'b' end
+
+    util_clear_gems
+
+    si = util_setup_spec_fetcher @a1, @b1, b2, c1
+
+    inst = Gem::DependencyInstaller.new
+    inst.find_spec_by_name_and_version 'c'
+    inst.gather_dependencies
+
+    assert_equal %w[b-2 c-1], inst.gems_to_install.map { |s| s.full_name }
   end
 
   def test_gather_dependencies_platform_alternate
@@ -657,7 +659,7 @@ class TestGemDependencyInstaller < RubyGemTestCase
   end
 
   def test_gather_dependencies_old_required
-    e1, = util_gem 'e', '1', 'd' => '= 1'
+    e1, = util_gem 'e', '1' do |s| s.add_dependency 'd', '= 1' end
 
     util_clear_gems
 

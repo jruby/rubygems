@@ -1,5 +1,5 @@
-require File.expand_path('../gemutilities', __FILE__)
-require File.expand_path('../simple_gem', __FILE__)
+require_relative 'gemutilities'
+require_relative 'simple_gem'
 require 'rubygems/format'
 
 class TestGemFormat < RubyGemTestCase

@@ -1,8 +1,8 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems'
 require 'rubygems/package_task'
 
-class TestGemPackageTask < RubyGemTestCase
+class TestGemPackageTask < MiniTest::Unit::TestCase
 
   def test_gem_package
     gem = Gem::Specification.new do |g|

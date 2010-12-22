@@ -4,6 +4,7 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'fileutils'
 require 'rubygems'
 
 ##
@@ -76,7 +77,7 @@ class Gem::DocManager
       :formatter => RDoc::RI::Formatter,
     }
 
-    driver = RDoc::RI::Driver.new(options).class_cache
+    RDoc::RI::Driver.new(options).class_cache
   end
 
   ##
@@ -84,7 +85,6 @@ class Gem::DocManager
   # RDoc (template etc.) as a String.
 
   def initialize(spec, rdoc_args="")
-    require 'fileutils'
     @spec = spec
     @doc_dir = File.join(spec.installation_path, "doc", spec.full_name)
     @rdoc_args = rdoc_args.nil? ? [] : rdoc_args.split

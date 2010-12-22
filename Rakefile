@@ -72,14 +72,14 @@ task :prerelease => [:clobber, :sanity_check, :test, :test_functional]
 
 task :postrelease => [:tag, :publish_docs]
 
-Rake::Task[:release_to_rubyforge].clear_actions
-
-task :release_to_rubyforge do
-  files = Dir["pkg/rubygems-update*.gem"]
-  rf = RubyForge.new.configure
-  rf.login
-  rf.add_file hoe.rubyforge_name, hoe.rubyforge_name, hoe.version, files.first
-end
+# Rake::Task[:release_to_rubyforge].clear_actions
+#
+# task :release_to_rubyforge do
+#   files = Dir["pkg/rubygems-update*.gem"]
+#   rf = RubyForge.new.configure
+#   rf.login
+#   rf.add_file hoe.rubyforge_name, hoe.rubyforge_name, hoe.version, files.first
+# end
 
 pkg_dir_path = "pkg/rubygems-update-#{hoe.version}"
 task pkg_dir_path do

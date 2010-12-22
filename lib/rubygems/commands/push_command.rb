@@ -21,13 +21,6 @@ class Gem::Commands::PushCommand < Gem::Command
   def initialize
     super 'push', description
     add_proxy_option
-    
-    add_option(
-      '--host HOST',
-      'Push to another gemcutter-compatible host'
-    ) do |value, options|
-      options[:host] = value
-    end
   end
 
   def execute
@@ -36,13 +29,9 @@ class Gem::Commands::PushCommand < Gem::Command
   end
 
   def send_gem name
-    say "Pushing gem to #{options[:host] || Gem.host}..."
+    say "Pushing gem to RubyGems.org..."
 
-    args = [:post, "api/v1/gems"]
-
-    args << options[:host] if options[:host]
-
-    response = rubygems_api_request(*args) do |request|
+    response = rubygems_api_request :post, "api/v1/gems" do |request|
       request.body = Gem.read_binary name
       request.add_field "Content-Length", request.body.size
       request.add_field "Content-Type",   "application/octet-stream"

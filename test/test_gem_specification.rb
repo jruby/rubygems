@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'stringio'
 require 'rubygems/specification'
 
@@ -777,6 +777,7 @@ Gem::Specification.new do |s|
   s.summary = %q{this is a summary}
 
   if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = #{Gem::Specification::CURRENT_SPECIFICATION_VERSION}
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
@@ -831,6 +832,7 @@ Gem::Specification.new do |s|
   s.test_files = [\"test/suite.rb\"]
 
   if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
@@ -1173,6 +1175,21 @@ end
     end
   end
 
+  def test_validate_rubyforge_project
+    util_setup_validate
+
+    Dir.chdir @tempdir do
+      @a1.rubyforge_project = ''
+
+      use_ui @ui do
+        @a1.validate
+      end
+
+      assert_equal "WARNING:  no rubyforge_project specified\n",
+                   @ui.error, 'error'
+    end
+  end
+
   def test_validate_rubygems_version
     util_setup_validate
 
@@ -1241,9 +1258,7 @@ end
     specfile.write "raise 'boom'"
     specfile.close
     begin
-      capture_io do
-        Gem::Specification.load(specfile.path)
-      end
+      Gem::Specification.load(specfile.path)
     rescue => e
       name_rexp = Regexp.new(Regexp.escape(specfile.path))
       assert e.backtrace.grep(name_rexp).any?

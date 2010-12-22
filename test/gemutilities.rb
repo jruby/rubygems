@@ -2,7 +2,7 @@ at_exit { $SAFE = 1 }
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-if defined? Gem::QuickLoader
+if RUBY_VERSION > '1.9' then
   Gem::QuickLoader.load_full_rubygems_library
 else
   require 'rubygems'
@@ -15,8 +15,6 @@ require 'rubygems/package'
 require 'rubygems/test_utilities'
 require 'pp'
 require 'yaml'
-require 'zlib'
-
 begin
   YAML::ENGINE.yamler = 'psych'
 rescue LoadError
@@ -29,11 +27,11 @@ end
 
 require 'rdoc/rdoc'
 
-require File.join(File.expand_path(File.dirname(__FILE__)), 'mockgemui')
+require_relative 'mockgemui'
 
 module Gem
   def self.searcher=(searcher)
-    @searcher = searcher
+    MUTEX.synchronize do @searcher = searcher end
   end
 
   def self.source_index=(si)
@@ -177,14 +175,6 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem::Installer.new(gem, :wrappers => true).install
   end
 
-  def uninstall_gem gem
-    require 'rubygems/uninstaller'
-
-    uninstaller = Gem::Uninstaller.new gem.name, :executables => true,
-                 :user_install => true
-    uninstaller.uninstall
-  end
-
   def mu_pp(obj)
     s = ''
     s = PP.pp obj, s
@@ -297,15 +287,7 @@ class RubyGemTestCase < MiniTest::Unit::TestCase
     Gem.source_index.refresh!
   end
 
-  def util_gem(name, version, deps = nil, &block)
-    if deps then # fuck you eric
-      block = proc do |s|
-        deps.each do |n, req|
-          s.add_dependency n, (req || '>= 0')
-        end
-      end
-    end
-
+  def util_gem(name, version, &block)
     spec = quick_gem(name, version, &block)
 
     util_build_gem spec
@@ -492,7 +474,7 @@ Also, a list:
   # other platforms, including Cygwin, it will return 'make'.
   #
   def self.make_command
-    vc_windows? ? 'nmake' : 'make'
+    ENV["make"] || (vc_windows? ? 'nmake' : 'make')
   end
 
   # Returns the make command for the current platform. For versions of Ruby
@@ -500,7 +482,7 @@ Also, a list:
   # other platforms, including Cygwin, it will return 'make'.
   #
   def make_command
-    vc_windows? ? 'nmake' : 'make'
+    ENV["make"] || (vc_windows? ? 'nmake' : 'make')
   end
 
   # Returns whether or not the nmake command could be found.

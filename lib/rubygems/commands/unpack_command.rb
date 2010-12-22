@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'rubygems/command'
 require 'rubygems/installer'
 require 'rubygems/version_option'
@@ -7,8 +8,6 @@ class Gem::Commands::UnpackCommand < Gem::Command
   include Gem::VersionOption
 
   def initialize
-    require 'fileutils'
-
     super 'unpack', 'Unpack an installed gem to the current directory',
           :version => Gem::Requirement.default,
           :target  => Dir.pwd

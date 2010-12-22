@@ -4,6 +4,9 @@
 # See LICENSE.txt for permissions.
 #++
 
+require 'find'
+
+require 'digest'
 require 'rubygems/format'
 require 'rubygems/installer'
 
@@ -19,11 +22,6 @@ end
 class Gem::Validator
 
   include Gem::UserInteraction
-
-  def initialize
-    require 'find'
-    require 'digest'
-  end
 
   ##
   # Given a gem file's contents, validates against its own MD5 checksum
@@ -167,6 +165,7 @@ class Gem::Validator
     errors
   end
 
+=begin
   if RUBY_VERSION < '1.9' then
     class TestRunner
       def initialize(suite, ui)
@@ -194,6 +193,7 @@ class Gem::Validator
 
     autoload :TestRunner, 'test/unit/ui/testrunnerutilities'
   end
+=end
 
   ##
   # Runs unit tests for a given gem specification
@@ -214,6 +214,7 @@ class Gem::Validator
 
     test_files.each do |f| require f end
 
+=begin
     if RUBY_VERSION < '1.9' then
       suite = Test::Unit::TestSuite.new("#{gem_spec.name}-#{gem_spec.version}")
 
@@ -228,6 +229,9 @@ class Gem::Validator
       result = MiniTest::Unit.new
       result.run
     end
+=end
+    result = MiniTest::Unit.new
+    result.run
 
     result
   ensure

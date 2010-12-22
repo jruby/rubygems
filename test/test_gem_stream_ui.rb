@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems/user_interaction'
 
 class TestGemStreamUI < RubyGemTestCase
@@ -12,6 +12,10 @@ class TestGemStreamUI < RubyGemTestCase
     end
 
     alias_method :isatty, :tty?
+
+    def noecho
+      yield self
+    end
   end
 
   def setup

@@ -1,5 +1,6 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems'
+require 'rubygems/command'
 require 'rubygems/gemcutter_utilities'
 
 class TestGemGemcutterUtilities < RubyGemTestCase
@@ -85,7 +86,7 @@ class TestGemGemcutterUtilities < RubyGemTestCase
     if host
       ENV['RUBYGEMS_HOST'] = host
     else
-      host = Gem.host
+      host = "https://rubygems.org"
     end
 
     @fetcher = Gem::FakeFetcher.new

@@ -1,3 +1,6 @@
+require 'zlib'
+require 'fileutils'
+
 require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/errors'
@@ -40,8 +43,6 @@ class Gem::SpecFetcher
   end
 
   def initialize
-    require 'fileutils'
-
     @dir = File.join Gem.user_home, '.gem', 'specs'
     @update_cache = File.stat(Gem.user_home).uid == Process.uid
 

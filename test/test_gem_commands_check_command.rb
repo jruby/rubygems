@@ -1,4 +1,4 @@
-require File.expand_path('../gemutilities', __FILE__)
+require_relative 'gemutilities'
 require 'rubygems/commands/check_command'
 
 class TestGemCommandsCheckCommand < RubyGemTestCase

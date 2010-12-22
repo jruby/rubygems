@@ -1,3 +1,8 @@
+require 'net/http'
+require 'stringio'
+require 'time'
+require 'uri'
+
 require 'rubygems'
 
 ##
@@ -51,11 +56,6 @@ class Gem::RemoteFetcher
   # * <tt>:no_proxy</tt>: ignore environment variables and _don't_ use a proxy
 
   def initialize(proxy = nil)
-    require 'net/http'
-    require 'stringio'
-    require 'time'
-    require 'uri'
-
     Socket.do_not_reverse_lookup = true
 
     @connections = {}
@@ -75,8 +75,6 @@ class Gem::RemoteFetcher
   # always replaced.
 
   def download(spec, source_uri, install_dir = Gem.dir)
-    Gem.ensure_gem_subdirectories(install_dir) rescue nil
-
     if File.writable?(install_dir)
       cache_dir = File.join install_dir, 'cache'
     else
