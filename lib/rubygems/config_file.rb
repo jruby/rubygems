@@ -49,7 +49,7 @@ class Gem::ConfigFile
     begin
       require 'etc.so'
       Etc.sysconfdir
-    rescue LoadError
+    rescue LoadError, NoMethodError
       '/etc'
     end
 
