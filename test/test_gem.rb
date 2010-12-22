@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems'
 require 'rubygems/gem_openssl'
 require 'rubygems/installer'
@@ -619,7 +619,7 @@ class TestGem < RubyGemTestCase
     ENV['USERPROFILE'] = orig_user_profile
     ENV['USERDRIVE'] = orig_user_drive
     ENV['USERPATH'] = orig_user_path
-  end if '1.9' > RUBY_VERSION
+  end if RUBY_VERSION >= '1.9'
 
   def test_load_plugins
     with_plugin('load') { Gem.load_plugins }

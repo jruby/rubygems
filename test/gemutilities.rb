@@ -27,7 +27,7 @@ end
 
 require 'rdoc/rdoc'
 
-require_relative 'mockgemui'
+require 'test/mockgemui'
 
 module Gem
   def self.searcher=(searcher)

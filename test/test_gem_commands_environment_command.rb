@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/commands/environment_command'
 
 class TestGemCommandsEnvironmentCommand < RubyGemTestCase

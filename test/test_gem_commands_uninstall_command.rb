@@ -1,5 +1,5 @@
-require_relative 'gemutilities'
-require_relative 'gem_installer_test_case'
+require 'test/gemutilities'
+require 'test/gem_installer_test_case'
 require 'rubygems/commands/uninstall_command'
 
 class TestGemCommandsUninstallCommand < GemInstallerTestCase

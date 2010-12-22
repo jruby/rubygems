@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/commands/sources_command'
 
 class TestGemCommandsSourcesCommand < RubyGemTestCase

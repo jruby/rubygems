@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/indexer'
 
 unless ''.respond_to? :to_xs then

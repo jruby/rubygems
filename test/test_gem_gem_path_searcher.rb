@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/gem_path_searcher'
 
 class Gem::GemPathSearcher

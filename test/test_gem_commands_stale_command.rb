@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/commands/stale_command'
 
 class TestGemCommandsStaleCommand < RubyGemTestCase

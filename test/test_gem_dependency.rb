@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/dependency'
 
 class TestGemDependency < RubyGemTestCase

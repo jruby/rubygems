@@ -1,5 +1,5 @@
-require_relative 'gemutilities'
-require_relative 'simple_gem'
+require 'test/gemutilities'
+require 'test/simple_gem'
 require 'rubygems/validator'
 
 class TestGemValidator < RubyGemTestCase

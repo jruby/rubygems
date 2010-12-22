@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'ostruct'
 require 'webrick'
 require 'rubygems/remote_fetcher'

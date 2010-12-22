@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/spec_fetcher'
 
 class TestGemSpecFetcher < RubyGemTestCase

@@ -1,4 +1,4 @@
-require_relative 'gem_package_tar_test_case'
+require 'test/gem_package_tar_test_case'
 require 'rubygems/package/tar_writer'
 
 class TestTarWriter < TarTestCase

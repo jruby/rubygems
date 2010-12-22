@@ -1,4 +1,4 @@
-require_relative 'gem_installer_test_case'
+require 'test/gem_installer_test_case'
 
 class TestGemInstaller < GemInstallerTestCase
 

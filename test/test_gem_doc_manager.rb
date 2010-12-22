@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/doc_manager'
 
 class TestGemDocManager < RubyGemTestCase

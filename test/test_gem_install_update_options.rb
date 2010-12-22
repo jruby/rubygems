@@ -1,4 +1,4 @@
-require_relative 'gem_installer_test_case'
+require 'test/gem_installer_test_case'
 require 'rubygems/install_update_options'
 require 'rubygems/command'
 

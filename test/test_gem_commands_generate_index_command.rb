@@ -1,4 +1,4 @@
-require_relative 'gemutilities'
+require 'test/gemutilities'
 require 'rubygems/indexer'
 require 'rubygems/commands/generate_index_command'
 
