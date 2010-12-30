@@ -2,12 +2,8 @@ module Gem
   class Specification
     # return whether the spec name represents a maven artifact
     def self.maven_name?(name)
-      case name
-      when Regexp
-        name.source =~ /\./
-      else
-        name =~ /\./
-      end
+      name = name.source if Regexp === name
+      name =~ /^[^:.]{2,}[.:]/
     end
   end
 
@@ -145,7 +141,6 @@ module Gem
         maven = maven_get
         r = DefaultMavenExecutionRequest.new
         r.set_show_errors verbose?
-        r.user_properties.put("gemify.skipDependencies", "true")
         r.user_properties.put("gemify.tempDir", temp_dir)
         r.user_properties.put("gemify.gemname", gemname)
         r.user_properties.put("gemify.version", version.to_s) if version
@@ -177,8 +172,7 @@ module Gem
       public
 
       def self.get_versions(gemname)
-        gemname = gemname.source.sub(/\^/, '') if gemname.is_a? Regexp
-        result = execute("#{BASE_GOAL}:versions", gemname, nil)
+        result = execute("#{BASE_GOAL}:versions", maven_name(gemname), nil)
 
         if result =~ /\[/ && result =~ /\]/
           result = result.gsub(/\n/, '').sub(/.*\[/, "").sub(/\]/, '').gsub(/ /, '').split(',')
@@ -190,7 +184,7 @@ module Gem
       end
 
       def self.generate_spec(gemname, version)
-        result = execute("#{BASE_GOAL}:gemify", gemname, version, {"gemify.onlySpecs" => true })
+        result = execute("#{BASE_GOAL}:gemify", maven_name(gemname), version, "gemify.onlySpecs" => true)
         path = result.gsub(/\n/, '')
         if path =~ /gemspec: /
           path = path.sub(/.*gemspec: /, '')
@@ -203,7 +197,7 @@ module Gem
       end
 
       def self.generate_gem(gemname, version)
-        result = execute("#{BASE_GOAL}:gemify", gemname, version)
+        result = execute("#{BASE_GOAL}:gemify", maven_name(gemname), version)
         path = result.gsub(/\n/, '')
         if path =~ /gem: /
 
@@ -217,6 +211,11 @@ module Gem
           warn result.sub(/.*Missing Artifacts:\s+/, '').gsub(/\tmvn/, "\t#{@mvn}")
           raise "error gemify #{gemname}:#{version}"
         end
+      end
+
+      def self.maven_name(gemname)
+        gemname = gemname.source if Regexp === gemname
+        gemname.gsub(/:/, '.')
       end
     end
   end
