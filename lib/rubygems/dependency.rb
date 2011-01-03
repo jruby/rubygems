@@ -101,6 +101,8 @@ class Gem::Dependency
 
       q.pp type
     end
+
+    __requirement
   end
 
   ##

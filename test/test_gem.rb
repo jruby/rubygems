@@ -709,6 +709,38 @@ class TestGem < RubyGemTestCase
     $LOAD_PATH.delete test_plugin_path
   end
 
+  def test_load_plugins
+    with_plugin('load') { Gem.load_plugins }
+    assert_equal :loaded, TEST_PLUGIN_LOAD
+
+    util_remove_interrupt_command
+
+    # Should attempt to cause a StandardError
+    with_plugin('standarderror') { Gem.load_plugins }
+    assert_equal :loaded, TEST_PLUGIN_STANDARDERROR
+
+    util_remove_interrupt_command
+
+    # Should attempt to cause an Exception
+    with_plugin('exception') { Gem.load_plugins }
+    assert_equal :loaded, TEST_PLUGIN_EXCEPTION
+  end
+
+  def with_plugin(path)
+    test_plugin_path = File.expand_path "../plugin/#{path}", __FILE__
+
+    # A single test plugin should get loaded once only, in order to preserve
+    # sane test semantics.
+    refute_includes $LOAD_PATH, test_plugin_path
+    $LOAD_PATH.unshift test_plugin_path
+
+    capture_io do
+      yield
+    end
+  ensure
+    $LOAD_PATH.delete test_plugin_path
+  end
+
   def util_ensure_gem_dirs
     Gem.ensure_gem_subdirectories @gemhome
     @additional.each do |dir|

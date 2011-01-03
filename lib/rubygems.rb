@@ -1150,6 +1150,46 @@ module Kernel
 
 end
 
+module Kernel
+
+  undef gem if respond_to? :gem # defined in gem_prelude.rb on 1.9
+
+  ##
+  # Use Kernel#gem to activate a specific version of +gem_name+.
+  #
+  # +version_requirements+ is a list of version requirements that the
+  # specified gem must match, most commonly "= example.version.number".  See
+  # Gem::Requirement for how to specify a version requirement.
+  #
+  # If you will be activating the latest version of a gem, there is no need to
+  # call Kernel#gem, Kernel#require will do the right thing for you.
+  #
+  # Kernel#gem returns true if the gem was activated, otherwise false.  If the
+  # gem could not be found, didn't match the version requirements, or a
+  # different version was already activated, an exception will be raised.
+  #
+  # Kernel#gem should be called *before* any require statements (otherwise
+  # RubyGems may load a conflicting library version).
+  #
+  # In older RubyGems versions, the environment variable GEM_SKIP could be
+  # used to skip activation of specified gems, for example to test out changes
+  # that haven't been installed yet.  Now RubyGems defers to -I and the
+  # RUBYLIB environment variable to skip activation of a gem.
+  #
+  # Example:
+  #
+  #   GEM_SKIP=libA:libB ruby -I../libA -I../libB ./mycode.rb
+
+  def gem(gem_name, *version_requirements) # :doc:
+    skip_list = (ENV['GEM_SKIP'] || "").split(/:/)
+    raise Gem::LoadError, "skipping #{gem_name}" if skip_list.include? gem_name
+    Gem.activate(gem_name, *version_requirements)
+  end
+
+  private :gem
+
+end
+
 ##
 # Return the path to the data directory associated with the named package.  If
 # the package is loaded as a gem, return the gem specific data directory.
