@@ -2,6 +2,7 @@ require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/errors'
 require 'rubygems/text'
+require 'rubygems/maven_gemify'
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
@@ -137,6 +138,11 @@ class Gem::SpecFetcher
   # is false, gems for all platforms are returned.
 
   def find_matching_with_errors(dependency, all = false, matching_platform = true, prerelease = false)
+    # from rubygems/maven_gemify.rb
+    if Gem::Specification.maven_name? dependency.name
+      return find_matching_using_maven(dependency)
+    end
+
     found = {}
 
     rejected_specs = {}
