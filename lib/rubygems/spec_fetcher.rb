@@ -2,6 +2,7 @@ require 'rubygems/remote_fetcher'
 require 'rubygems/user_interaction'
 require 'rubygems/errors'
 require 'rubygems/text'
+require 'rubygems/maven_gemify'
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
@@ -93,7 +94,13 @@ class Gem::SpecFetcher
     spec = spec - [nil, 'ruby', '']
     spec_file_name = "#{spec.join '-'}.gemspec"
 
-    uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
+    # from rubygems/maven_gemify.rb
+    is_maven = Gem::Specification.maven_name? spec[0]
+    if is_maven
+      uri = source_uri + spec_file_name
+    else
+      uri = source_uri + "#{Gem::MARSHAL_SPEC_DIR}#{spec_file_name}"
+    end
 
     cache_dir = cache_dir uri
 
@@ -102,10 +109,15 @@ class Gem::SpecFetcher
     if File.exist? local_spec then
       spec = Gem.read_binary local_spec
     else
-      uri.path << '.rz'
+      if is_maven
+        # from rubygems/maven_gemify.rb
+        spec = gemify_generate_spec(spec)
+      else
+        uri.path << '.rz'
 
-      spec = @fetcher.fetch_path uri
-      spec = Gem.inflate spec
+        spec = @fetcher.fetch_path uri
+        spec = Gem.inflate spec
+      end
 
       if @update_cache then
         FileUtils.mkdir_p cache_dir
