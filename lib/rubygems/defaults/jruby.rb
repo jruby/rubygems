@@ -8,11 +8,6 @@ module Gem
   ConfigFile::PLATFORM_DEFAULTS['update']  = '--no-rdoc --no-ri --env-shebang'
 
   class << self
-    alias_method :original_ensure_gem_subdirectories, :ensure_gem_subdirectories
-    def ensure_gem_subdirectories(gemdir)
-      original_ensure_gem_subdirectories(gemdir) unless jarred_path? gemdir.to_s
-    end
-
     alias_method :original_ruby, :ruby
     def ruby
       ruby_path = original_ruby
