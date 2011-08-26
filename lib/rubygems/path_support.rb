@@ -55,6 +55,17 @@ class Gem::PathSupport
         gem_path = gpaths.dup
       else
         gem_path = gpaths.split(File::PATH_SEPARATOR)
+
+        0.upto(gem_path.size - 1) do |i|
+          # Rejoin incorrectly split URLs. Push proto + ':' onto following item
+          if gem_path[i] =~ /^(jar(:file)?|file|classpath)$/ || # recognize commonly encountered protocols
+              (gem_path[i] =~ /^[a-z]+$/ && # some other protocol and following element begins with '//'
+               gem_path[i+1] && gem_path[i+1] =~ %r{^//})
+            gem_path[i+1] = gem_path[i] + ':' + gem_path[i+1]
+            gem_path[i] = nil
+          end
+        end if File::PATH_SEPARATOR == ':'
+        gem_path.compact!
       end
 
       if File::ALT_SEPARATOR then
