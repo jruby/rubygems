@@ -116,10 +116,16 @@ class Gem::SpecFetcher
     if File.exist? local_spec then
       spec = Gem.read_binary local_spec
     else
-      uri.path << '.rz'
+      spec = if maven_spec?(spec[0], source_uri)
+        # from rubygems/maven_gemify.rb
+        maven_generate_spec(spec)
+      end
+      unless spec
+        uri.path << '.rz'
 
-      spec = @fetcher.fetch_path uri
-      spec = Gem.inflate spec
+        spec = @fetcher.fetch_path uri
+        spec = Gem.inflate spec
+      end
 
       if @update_cache then
         FileUtils.mkdir_p cache_dir
@@ -295,3 +301,7 @@ class Gem::SpecFetcher
 
 end
 
+# Load rubygems/maven_gemify.rb here because;
+# * want to require only spec_fetcher is required to avoid circular require.
+# * need to require after spec_fetcher and remote_fetcher to override those definitions.
+require 'rubygems/maven_gemify'
